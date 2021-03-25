@@ -1,0 +1,58 @@
+# databse
+
+题目描述（简单）
+=============
+
+编写一个 SQL 查询，获取 Employee 表中第二高的薪水（Salary） 。
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+例如上述 Employee 表，SQL查询应该返回 200 作为第二高的薪水。如果不存在第二高的薪水，那么查询应返回 null。
+
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+
+解法一：使用子查询和 LIMIT 子句
+===========================
+
+```MySQL
+SELECT DISTINCT Salary AS SecondHighestSalary
+FROM Employee
+ORDER BY Salary DESC
+LIMIT 1 OFFSET 1;
+```
+
+这种方式会出现为NULL的情况，因此需要加一层子循环
+
+```MySQL
+SELECT
+    (SELECT DISTINCT Salary
+     FROM Employee
+     ORDER BY Salary DESC
+      LIMIT 1 OFFSET 1) AS SecondHighestSalary;
+```
+
+解法二：使用 IFNULL 和 LIMIT 子句
+==============================
+
+```MySQL
+SELECT
+    IFNULL(
+        (SELECT DISTINCT Salary
+        FROM Employee
+        ORDER BY Salary DESC
+        LIMIT 1 OFFSET 1),NULL) AS SecondHighestSalary;
+```
+
+总结：
+====
+
+注意NULL的情况，以及IFNULL函数的使用。
